@@ -13,6 +13,12 @@ import {Container, Service} from "typedi";
 import {Request, Response, NextFunction} from "express";
 import {prepareResponse} from "./lib/ApiResponse";
 import {ProfileController} from "./controller/profile/ProfileController";
+import {scheduledFunction} from "./scheduledTasks";
+import {onSchedule} from "firebase-functions/v2/scheduler";
+
+import {setGlobalOptions} from "firebase-functions/v2";
+
+setGlobalOptions({region: "asia-northeast3"});
 
 useContainer(Container);
 
@@ -41,6 +47,9 @@ const app = createExpressServer({
     controllers: [ProfileController],
 });
 
-app.listen(3000);
+exports.api = onRequest(app);
 
-exports.api = onRequest({region: ["asia-northeast3"]}, app);
+exports.scheduledFunctionCrontab = onSchedule({
+    schedule: "every 5 minutes",
+    timeZone: "Asia/Seoul",
+}, scheduledFunction);

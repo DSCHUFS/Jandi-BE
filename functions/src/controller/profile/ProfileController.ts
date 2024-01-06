@@ -7,7 +7,6 @@ import {ProfileService} from "../../service/ProfileService";
 @Controller("/profiles")
 @Service()
 export class ProfileController {
-
     constructor(private profileService: ProfileService) {
     }
 
@@ -40,7 +39,7 @@ export class ProfileController {
             modifiedAt: "",
         });
 
-        const profile = await this.profileService.readProfile(profileCreateRequest.githubUsername)
+        const profile = await this.profileService.readProfile(profileCreateRequest.githubUsername);
         if (profile) {
             return prepareResponse(profile, "");
         } else {
