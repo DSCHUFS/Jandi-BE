@@ -3,7 +3,7 @@ export interface Profile {
     githubUsername: string,
     websiteUrl: string,
     totalCommitCounts: number,
-    last21daysPushCounts: number[],
+    last28daysPushCounts: number[],
     latestPushedAt: string,
     createdAt: string,
     modifiedAt: string

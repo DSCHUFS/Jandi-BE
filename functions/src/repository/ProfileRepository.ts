@@ -24,7 +24,7 @@ export class ProfileRepository extends FirestoreRepository {
                 githubUsername: data.githubUsername,
                 websiteUrl: data.websiteUrl,
                 totalCommitCounts: data.totalCommitCounts,
-                last21daysPushCounts: data.last21daysPushCounts,
+                last28daysPushCounts: data.last28daysPushCounts,
                 latestPushedAt: data.latestPushedAt,
                 createdAt: data.createdAt.toDate(),
                 modifiedAt: data.modifiedAt.toDate(),
