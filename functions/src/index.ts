@@ -12,7 +12,7 @@ import {onRequest} from "firebase-functions/v2/https";
 import {Container, Service} from "typedi";
 import {Request, Response, NextFunction} from "express";
 import {prepareResponse} from "./lib/ApiResponse";
-import {ProfileController} from "./controller/ProfileController";
+import {ProfileController} from "./controller/profile/ProfileController";
 
 useContainer(Container);
 
@@ -21,7 +21,8 @@ useContainer(Container);
 export class HttpErrorHandler implements ExpressErrorMiddlewareInterface {
     error(error: Error, request: Request, response: Response, next: (err: Error) => NextFunction) {
         if (error instanceof HttpError) {
-            response.status(error.httpCode).json(error);
+            const res = prepareResponse(undefined, error.message);
+            response.status(error.httpCode).send(res);
         } else {
             const res = prepareResponse(undefined, error.message);
             response.status(500).send(res);
