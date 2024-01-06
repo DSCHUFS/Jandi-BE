@@ -1,11 +1,13 @@
 import { Controller, Get, Param } from "routing-controllers";
 import { Service } from "typedi";
 import { GithubService } from "../../service/GithubService";
+import { ProfileService } from "../../service/ProfileService";
 
 @Controller("/github")
 @Service()
 export class GithubController {
-    constructor(private githubService: GithubService) {}
+    constructor(private githubService: GithubService, private profileService : ProfileService) {}
+    // constructor(private githubService: GithubService) {}
 
     @Get("/getGithubUserPushEvents/:githubUsername")
     async getGithubUserPushEvents(
@@ -20,10 +22,10 @@ export class GithubController {
     ) {
         const startDate = new Date(2023, 11, 20);
         const lastDate = new Date(startDate);
+        lastDate.setDate(startDate.getDate() + 27);
         const currentDate = new Date();
 
-        lastDate.setDate(startDate.getDate() + 27);
-
+        console.log(startDate, lastDate);
         const response = await this.githubService.getGithubUserContributions(
             githubUsername,
             startDate,
@@ -31,20 +33,26 @@ export class GithubController {
         );
         console.log(response, currentDate);
 
-        const resultArray:boolean[] = [];
+        const resultArray:number[] = [];
 
         response.data.user.contributionsCollection.contributionCalendar.weeks.forEach(
             (week: any) => {
                 week.contributionDays.forEach((day: any) => {
                     // 각 날짜에 대한 contributionCount와 date를 객체로 만들어 배열에 추가
                     resultArray.push(
-                        day.contributionCount > 0 ? true : false
+                        day.contributionCount
                     );
                 });
             }
         );
 
         console.log(resultArray);
+
+        const totalContributions: number = response.data.user.contributionsCollection.contributionCalendar.totalContributions;
+
+        await this.profileService.updateContributeCounts(githubUsername, resultArray);
+        await this.profileService.updateTotalContributions(githubUsername, totalContributions);
+        
 
         return response;
     }

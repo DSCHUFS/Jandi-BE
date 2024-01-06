@@ -16,11 +16,24 @@ export class ProfileController {
         return prepareResponse(profiles, "");
     }
 
+    // @Get("/:githubUsername")
+    // async getOne(@Param("githubUsername") githubUsername: string) {
+    //     const profile = await this.profileService.readProfile(githubUsername);
+    //     if (profile) {
+    //         return prepareResponse(profile, "");
+    //     } else {
+    //         throw new HttpError(404, "Profile not found");
+    //     }
+    // }
+
     @Get("/:githubUsername")
-    async getOne(@Param("githubUsername") githubUsername: string) {
+    async getOneStreak(@Param("githubUsername") githubUsername: string) {
         const profile = await this.profileService.readProfile(githubUsername);
+
         if (profile) {
-            return prepareResponse(profile, "");
+            const streak = await this.profileService.calculateStreakCounts(githubUsername);
+            const streakProfile:any = {...profile, streakCounts: streak}
+            return prepareResponse(streakProfile, "");
         } else {
             throw new HttpError(404, "Profile not found");
         }
@@ -35,8 +48,8 @@ export class ProfileController {
             totalCommitCounts: 0,
             last28daysContributionCounts: [],
             latestPushedAt: "",
-            createdAt: "",
-            modifiedAt: "",
+            createdAt: new Date(),
+            modifiedAt: new Date(),
         });
 
         const profile = await this.profileService.readProfile(profileCreateRequest.githubUsername);

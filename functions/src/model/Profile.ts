@@ -5,6 +5,6 @@ export interface Profile {
     totalCommitCounts: number,
     last28daysContributionCounts: number[],
     latestPushedAt: string,
-    createdAt: string,
-    modifiedAt: string
+    createdAt: Date,
+    modifiedAt: Date
 }
