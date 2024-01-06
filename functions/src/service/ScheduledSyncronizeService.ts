@@ -1,13 +1,13 @@
 import {ProfileService} from "./ProfileService";
 import {GithubService} from "./GithubService";
 import {Service} from "typedi";
-import {PushEventRepository} from "../repository/PushEventRepository";
+import {PushEventService} from "./PushEventService";
 
 @Service()
 export class ScheduledSynchronizeService {
     constructor(private profileService: ProfileService,
-                private githubService: GithubService,
-                private pushEventService: PushEventRepository) {
+                private pushEventService: PushEventService,
+                private githubService: GithubService) {
     }
 
     async synchronizePushEvents() {

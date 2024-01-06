@@ -17,7 +17,7 @@ export class GithubService {
                     id: event["id"],
                     repositoryName: event["repo"]["name"],
                     repositoryUrl: event["repo"]["url"],
-                    createdAt: event["created_at"],
+                    createdAt: new Date(event["created_at"]),
                 };
             });
     }

@@ -13,9 +13,9 @@ export class GithubController {
         return this.githubService.getGithubUserPushEvents(githubUsername);
     }
 
-    @Get("/getGithubUserContributions/:githubUsername")
-    async getGithubUserContributions(@Param("githubUsername") githubUsername: string) {
-        return this.githubService.getGithubUserContributions(githubUsername, "2024-01-01T00:00:00Z",
-            "2024-12-31T00:00:00Z");
-    }
+    // @Get("/getGithubUserContributions/:githubUsername")
+    // async getGithubUserContributions(@Param("githubUsername") githubUsername: string) {
+    //     return this.githubService.getGithubUserContributions(githubUsername, "2024-01-01T00:00:00Z",
+    //         "2024-12-31T00:00:00Z");
+    // }
 }

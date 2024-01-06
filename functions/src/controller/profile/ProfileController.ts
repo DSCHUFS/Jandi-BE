@@ -3,11 +3,12 @@ import {Service} from "typedi";
 import {prepareResponse} from "../../lib/ApiResponse";
 import {ProfileCreateRequest} from "./request/ProfileCreateRequest";
 import {ProfileService} from "../../service/ProfileService";
+import {PushEventService} from "../../service/PushEventService";
 
 @Controller("/profiles")
 @Service()
 export class ProfileController {
-    constructor(private profileService: ProfileService) {
+    constructor(private profileService: ProfileService, private pushEventService: PushEventService) {
     }
 
     @Get("/")
@@ -24,6 +25,12 @@ export class ProfileController {
         } else {
             throw new HttpError(404, "Profile not found");
         }
+    }
+
+    @Get("/:githubUsername/pushEvents/today")
+    async getProfileTodayPushEvents(@Param("githubUsername") githubUsername: string) {
+        const pushEvents = await this.pushEventService.readTodayPushEvents(githubUsername);
+        return prepareResponse(pushEvents, "");
     }
 
     @Post("/")
