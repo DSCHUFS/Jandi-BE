@@ -1,17 +1,17 @@
 import axios, {AxiosInstance} from "axios";
 import {defineSecret} from "firebase-functions/params";
 
-const githubAccessToken = defineSecret('GITHUB_ACCESS_TOKEN');
+const githubAccessToken = defineSecret("GITHUB_ACCESS_TOKEN");
 
 export class GithubApiClient {
     private client: AxiosInstance;
 
 
     constructor() {
-        console.log("githubaccesstoken", githubAccessToken.value())
+        console.log("githubaccesstoken", githubAccessToken.value());
         this.client = axios.create({
-            baseURL: 'https://api.github.com/',
-            headers: {'Authorization': `Bearer ${githubAccessToken.value()}`}
+            baseURL: "https://api.github.com/",
+            headers: {"Authorization": `Bearer ${githubAccessToken.value()}`},
         });
     }
 
@@ -20,7 +20,7 @@ export class GithubApiClient {
             const response = await this.client.get(`/users/${username}/events`);
             return response.data;
         } catch (error) {
-            console.error('Error fetching GitHub user events:', error);
+            console.error("Error fetching GitHub user events:", error);
             throw error;
         }
     }
@@ -46,17 +46,17 @@ export class GithubApiClient {
         const variables = {
             userName,
             from,
-            to
+            to,
         };
 
         try {
-            const response = await this.client.post('/graphql', {
+            const response = await this.client.post("/graphql", {
                 query,
-                variables
+                variables,
             });
             return response.data;
         } catch (error) {
-            console.error('Error fetching GitHub user contribution data:', error);
+            console.error("Error fetching GitHub user contribution data:", error);
             throw error;
         }
     }
