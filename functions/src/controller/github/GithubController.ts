@@ -1,6 +1,6 @@
 import {Controller, Get, Param} from "routing-controllers";
-import {Service} from "typedi";
 import {GithubService} from "../../service/GithubService";
+import {Service} from "typedi";
 
 @Controller("/github")
 @Service()

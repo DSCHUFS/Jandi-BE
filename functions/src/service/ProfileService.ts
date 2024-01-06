@@ -18,4 +18,8 @@ export class ProfileService {
     async readAllProfiles(): Promise<Profile[]> {
         return await this.profileRepository.getAllProfiles();
     }
+
+    async updateLatestPushedAt(githubUsername: string, latestPushedAt: Date) {
+        await this.profileRepository.updateLatestPushedAt(githubUsername, latestPushedAt);
+    }
 }

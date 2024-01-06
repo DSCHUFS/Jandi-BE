@@ -1,7 +1,7 @@
 import axios, {AxiosInstance} from "axios";
 import {defineSecret} from "firebase-functions/params";
 
-const githubAccessToken = defineSecret("GITHUB_ACCESS_TOKEN");
+const githubAccessToken = defineSecret("GITHUB_TOKEN");
 
 export class GithubApiClient {
     private client: AxiosInstance;

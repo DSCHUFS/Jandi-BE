@@ -46,6 +46,12 @@ export class ProfileRepository extends FirestoreRepository {
             .get()).data();
     }
 
+    async updateLatestPushedAt(githubUsername: string, latestPushedAt: Date) {
+        await this.db.collection("profiles").doc(githubUsername).update({
+            latestPushedAt: latestPushedAt,
+        });
+    }
+
     async getAllProfiles(): Promise<Profile[]> {
         const snapshot = await this.db.collection("profiles")
             .withConverter(this.profileConverter(FirebaseConverterMode.MODE_READ))

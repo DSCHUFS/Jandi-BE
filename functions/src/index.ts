@@ -18,6 +18,9 @@ import {onSchedule} from "firebase-functions/v2/scheduler";
 
 import {setGlobalOptions} from "firebase-functions/v2";
 import {GithubController} from "./controller/github/GithubController";
+import {defineSecret} from "firebase-functions/params";
+
+const githubAccessToken = defineSecret("GITHUB_TOKEN");
 
 setGlobalOptions({region: "asia-northeast3"});
 
@@ -48,9 +51,10 @@ const app = createExpressServer({
     controllers: [ProfileController, GithubController],
 });
 
-exports.api = onRequest(app);
+exports.api = onRequest({secrets: [githubAccessToken]}, app);
 
 exports.scheduledFunctionCrontab = onSchedule({
-    schedule: "every 5 minutes",
+    secrets: [githubAccessToken],
+    schedule: "every 1 minutes",
     timeZone: "Asia/Seoul",
 }, scheduledFunction);
