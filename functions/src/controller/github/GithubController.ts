@@ -1,12 +1,14 @@
-import { Controller, Get, Param } from "routing-controllers";
-import { Service } from "typedi";
-import { GithubService } from "../../service/GithubService";
-import { ProfileService } from "../../service/ProfileService";
+import {Controller, Get, Param} from "routing-controllers";
+import {Service} from "typedi";
+import {GithubService} from "../../service/GithubService";
+import {ProfileService} from "../../service/ProfileService";
 
 @Controller("/github")
 @Service()
 export class GithubController {
-    constructor(private githubService: GithubService, private profileService : ProfileService) {}
+    constructor(private githubService: GithubService, private profileService: ProfileService) {
+    }
+
     // constructor(private githubService: GithubService) {}
 
     @Get("/getGithubUserPushEvents/:githubUsername")
@@ -33,7 +35,7 @@ export class GithubController {
         );
         console.log(response, currentDate);
 
-        const resultArray:number[] = [];
+        const resultArray: number[] = [];
 
         response.data.user.contributionsCollection.contributionCalendar.weeks.forEach(
             (week: any) => {
@@ -48,11 +50,12 @@ export class GithubController {
 
         console.log(resultArray);
 
-        const totalContributions: number = response.data.user.contributionsCollection.contributionCalendar.totalContributions;
+        const totalContributions: number = response.data.user
+            .contributionsCollection.contributionCalendar.totalContributions;
 
         await this.profileService.updateContributeCounts(githubUsername, resultArray);
         await this.profileService.updateTotalContributions(githubUsername, totalContributions);
-        
+
 
         return response;
     }

@@ -8,7 +8,6 @@ export class GithubApiClient {
 
 
     constructor() {
-        console.log("githubaccesstoken", githubAccessToken.value());
         this.client = axios.create({
             baseURL: "https://api.github.com/",
             headers: {"Authorization": `Bearer ${githubAccessToken.value()}`},
