@@ -13,7 +13,7 @@ export class GithubService {
         return this.client.getUserEvents(username);
     }
 
-    async getGithubUserContributions(username: string, from: string, to: string) {
+    async getGithubUserContributions(username: string, from: Date, to: Date) {
         return this.client.getUserContributionData(username, from, to);
     }
 }

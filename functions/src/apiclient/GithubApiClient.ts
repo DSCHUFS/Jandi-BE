@@ -25,7 +25,7 @@ export class GithubApiClient {
         }
     }
 
-    async getUserContributionData(userName: string, from: string, to: string): Promise<any> {
+    async getUserContributionData(userName: string, from: Date, to: Date): Promise<any> {
         const query = `
       query ($userName: String!, $from: DateTime!, $to: DateTime!) {
         user(login: $userName) {

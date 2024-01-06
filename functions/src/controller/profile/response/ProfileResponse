@@ -4,6 +4,7 @@ export interface Profile {
     websiteUrl: string,
     totalCommitCounts: number,
     last28daysContributionCounts: number[],
+    streakCount: number,
     latestPushedAt: string,
     createdAt: string,
     modifiedAt: string

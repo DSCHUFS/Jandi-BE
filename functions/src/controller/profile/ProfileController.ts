@@ -33,7 +33,7 @@ export class ProfileController {
             name: profileCreateRequest.name,
             websiteUrl: profileCreateRequest.websiteUrl,
             totalCommitCounts: 0,
-            last28daysPushCounts: [],
+            last28daysContributionCounts: [],
             latestPushedAt: "",
             createdAt: "",
             modifiedAt: "",
