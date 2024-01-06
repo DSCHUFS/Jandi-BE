@@ -53,6 +53,21 @@ export class ProfileRepository extends FirestoreRepository {
         });
     }
 
+    async updateContributionCounts(githubUsername : string, contributionCounts : number[]) {
+        if(contributionCounts.length != 28)
+            throw Error("not size 28");
+
+        await this.db.collection("profiles").doc(githubUsername).update({
+            last28daysContributionCounts: contributionCounts
+        });
+    }
+
+    async updateTotalContributions(githubUsername : string, totalContributions : number) {
+        await this.db.collection("profiles").doc(githubUsername).update({
+            totalCommitCounts: totalContributions
+        });
+    }
+
     async getAllProfiles(): Promise<Profile[]> {
         const snapshot = await this.db.collection("profiles")
             .withConverter(this.profileConverter(FirebaseConverterMode.MODE_READ))
