@@ -12,20 +12,23 @@ export class ScheduledSynchronizeService {
 
     async synchronizePushEvents() {
         const profiles = await this.profileService.readAllProfiles();
-        for (const profile of profiles) {
+
+        // 모든 프로필에 대해 병렬로 작업 수행
+        await Promise.all(profiles.map(async (profile) => {
             const githubUserPushEvents = await this.githubService.getGithubUserPushEvents(profile.githubUsername);
 
             let latestDate = new Date(0);
-            for (const event of githubUserPushEvents) {
+            await Promise.all(githubUserPushEvents.map(async (event) => {
                 await this.pushEventService.createPushEvent(profile.githubUsername, event);
                 const eventDate = new Date(event.createdAt);
                 if (eventDate > latestDate) {
                     latestDate = eventDate;
                 }
-            }
+            }));
+
             if (latestDate > new Date(0)) {
                 await this.profileService.updateLatestPushedAt(profile.githubUsername, latestDate);
             }
-        }
+        }));
     }
 }
