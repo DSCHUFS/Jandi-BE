@@ -1,7 +1,8 @@
 import {Service} from "typedi";
 import {ProfileRepository} from "../repository/ProfileRepository";
 import {Profile} from "../model/Profile";
-import { GlobalDate } from "../global/globalDate";
+import {GlobalDate} from "../global/globalDate";
+
 // import {ProfileResponse} from "../controller/profile/response";
 
 @Service()
@@ -25,18 +26,18 @@ export class ProfileService {
         await this.profileRepository.updateLatestPushedAt(githubUsername, latestPushedAt);
     }
 
-    async updateContributeCounts(githubUsername: string, contributionCounts : number[]) {
+    async updateContributeCounts(githubUsername: string, contributionCounts: number[]) {
         return await this.profileRepository.updateContributionCounts(githubUsername, contributionCounts);
     }
 
-    async updateTotalContributions(githubUsername: string, totalContributions : number) {
+    async updateTotalContributions(githubUsername: string, totalContributions: number) {
         return await this.profileRepository.updateTotalContributions(githubUsername, totalContributions);
     }
 
     async calculateStreakCounts(githubUsername: string): Promise<number> {
         const prof = await this.profileRepository.getProfile(githubUsername);
         // controller에서 처리해서 실제로 error발생 x
-        if(!prof){
+        if (!prof) {
             throw Error()
         }
 

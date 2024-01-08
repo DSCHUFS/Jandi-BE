@@ -4,6 +4,7 @@ import {prepareResponse} from "../../lib/ApiResponse";
 import {ProfileCreateRequest} from "./request/ProfileCreateRequest";
 import {ProfileService} from "../../service/ProfileService";
 import {PushEventService} from "../../service/PushEventService";
+import {ProfileGetResponse} from "./request/ProfileGetResponse";
 
 @Controller("/profiles")
 @Service()
@@ -17,24 +18,24 @@ export class ProfileController {
         return prepareResponse(profiles, "");
     }
 
-    // @Get("/:githubUsername")
-    // async getOne(@Param("githubUsername") githubUsername: string) {
-    //     const profile = await this.profileService.readProfile(githubUsername);
-    //     if (profile) {
-    //         return prepareResponse(profile, "");
-    //     } else {
-    //         throw new HttpError(404, "Profile not found");
-    //     }
-    // }
-
     @Get("/:githubUsername")
-    async getOneStreak(@Param("githubUsername") githubUsername: string) {
+    async getOne(@Param("githubUsername") githubUsername: string) {
         const profile = await this.profileService.readProfile(githubUsername);
 
         if (profile) {
             const streak = await this.profileService.calculateStreakCounts(githubUsername);
-            const streakProfile:any = {...profile, streakCounts: streak}
-            return prepareResponse(streakProfile, "");
+            const response: ProfileGetResponse = {
+                name: profile.name,
+                githubUsername: profile.githubUsername,
+                websiteUrl: profile.websiteUrl,
+                totalCommitCounts: profile.totalCommitCounts,
+                last28daysContributionCounts: profile.last28daysContributionCounts,
+                latestPushedAt: profile.latestPushedAt,
+                createdAt: profile.createdAt,
+                modifiedAt: profile.modifiedAt,
+                streakCounts: streak,
+            };
+            return prepareResponse(response, "");
         } else {
             throw new HttpError(404, "Profile not found");
         }
@@ -46,6 +47,7 @@ export class ProfileController {
         return prepareResponse(pushEvents, "");
     }
 
+    // TODO : Disable this API in production
     @Post("/")
     async postOne(@Body({required: true}) profileCreateRequest: ProfileCreateRequest) {
         await this.profileService.createProfile({

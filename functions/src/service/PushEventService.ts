@@ -12,12 +12,27 @@ export class PushEventService {
     }
 
     async readTodayPushEvents(githubUsername: string): Promise<ProfilePushEvent[]> {
-        const todayStart = new Date();
-        todayStart.setHours(0, 0, 0, 0); // 오늘 날짜의 시작 (자정)
+        const nowUTC = new Date();
 
-        const todayEnd = new Date();
-        todayEnd.setHours(23, 59, 59, 999); // 오늘 날짜의 끝 (23시 59분 59초)
+        // Convert UTC time to KST time (UTC+9)
+        const offsetKST = 9 * 60; // 9 hours in minutes
+        const nowKST = new Date(nowUTC.getTime() + offsetKST * 60000);
 
-        return await this.pushEventRepository.readPushEventsByCreatedAt(githubUsername, todayStart, todayEnd);
+        // Create a new date object for the start of the day in KST
+        const todayStartKST = new Date(nowKST);
+        todayStartKST.setHours(0, 0, 0, 0);
+
+        // Adjust back to UTC
+        const todayStartUTC = new Date(todayStartKST.getTime() - offsetKST * 60000);
+
+        // Create a new date object for the end of the day in KST
+        const todayEndKST = new Date(nowKST);
+        todayEndKST.setHours(23, 59, 59, 999);
+
+        // Adjust back to UTC
+        const todayEndUTC = new Date(todayEndKST.getTime() - offsetKST * 60000);
+
+        // Query using the UTC times
+        return await this.pushEventRepository.readPushEventsByCreatedAt(githubUsername, todayStartUTC, todayEndUTC);
     }
 }
