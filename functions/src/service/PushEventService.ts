@@ -11,6 +11,10 @@ export class PushEventService {
         return await this.pushEventRepository.createPushEvent(githubUsername, pushEvent);
     }
 
+    async isPushEventExist(githubUsername: string, pushEventId: string): Promise<boolean> {
+        return await this.pushEventRepository.isPushEventExist(githubUsername, pushEventId);
+    }
+
     async readTodayPushEvents(githubUsername: string): Promise<ProfilePushEvent[]> {
         const nowUTC = new Date();
 

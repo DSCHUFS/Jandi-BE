@@ -4,5 +4,5 @@ import {ScheduledSynchronizeService} from "./service/ScheduledSyncronizeService"
 
 export const scheduledFunction = async (event: ScheduledEvent) => {
     const scheduledSynchronizeService = Container.get(ScheduledSynchronizeService);
-    await scheduledSynchronizeService.synchronizePushEvents();
+    await scheduledSynchronizeService.synchronize();
 };

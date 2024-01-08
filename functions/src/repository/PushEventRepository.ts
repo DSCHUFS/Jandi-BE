@@ -37,6 +37,14 @@ export class PushEventRepository extends FirestoreRepository {
         return snapshot.docs.map((doc) => doc.data());
     }
 
+    async isPushEventExist(githubUsername: string, pushEventId: string): Promise<boolean> {
+        const doc = await this.db.collection("profiles").doc(githubUsername)
+            .collection("pushEvents")
+            .doc(pushEventId)
+            .get();
+        return doc.exists;
+    }
+
     async readPushEventsByCreatedAt(githubUsername: string, from: Date, to: Date): Promise<ProfilePushEvent[]> {
         const snapshot = await this.db.collection("profiles").doc(githubUsername)
             .collection("pushEvents")
