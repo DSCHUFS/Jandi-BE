@@ -34,13 +34,7 @@ export class ProfileService {
         return await this.profileRepository.updateTotalContributions(githubUsername, totalContributions);
     }
 
-    async calculateStreakCounts(githubUsername: string): Promise<number> {
-        const prof = await this.profileRepository.getProfile(githubUsername);
-        // controller에서 처리해서 실제로 error발생 x
-        if (!prof) {
-            throw Error()
-        }
-
+    calculateStreakCounts(last28daysContributionCounts: number[]): number {
         const globalDate = new GlobalDate();
 
         const startDate: Date = globalDate.startDate;
@@ -59,10 +53,11 @@ export class ProfileService {
 
         let count = 0;
         for (let index = diffDays - 1; index > 0; index--) {
-            if (prof.last28daysContributionCounts[index] > 0)
+            if (last28daysContributionCounts[index] > 0) {
                 count++;
-            else break;
-
+            } else {
+                break;
+            }
         }
         return count;
     }

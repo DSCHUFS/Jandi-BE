@@ -5,6 +5,7 @@ import {ProfileCreateRequest} from "./request/ProfileCreateRequest";
 import {ProfileService} from "../../service/ProfileService";
 import {PushEventService} from "../../service/PushEventService";
 import {ProfileGetResponse} from "./request/ProfileGetResponse";
+import {Profile} from "../../model/Profile";
 
 @Controller("/profiles")
 @Service()
@@ -14,7 +15,20 @@ export class ProfileController {
 
     @Get("/")
     async getAll() {
-        const profiles = await this.profileService.readAllProfiles();
+        const profiles: ProfileGetResponse[] = (await this.profileService.readAllProfiles()).map((profile: Profile) => {
+            const streak = this.profileService.calculateStreakCounts(profile.last28daysContributionCounts);
+            return {
+                name: profile.name,
+                githubUsername: profile.githubUsername,
+                websiteUrl: profile.websiteUrl,
+                totalCommitCounts: profile.totalCommitCounts,
+                last28daysContributionCounts: profile.last28daysContributionCounts,
+                latestPushedAt: profile.latestPushedAt,
+                createdAt: profile.createdAt,
+                modifiedAt: profile.modifiedAt,
+                streakCounts: streak,
+            };
+        });
         return prepareResponse(profiles, "");
     }
 
@@ -23,7 +37,7 @@ export class ProfileController {
         const profile = await this.profileService.readProfile(githubUsername);
 
         if (profile) {
-            const streak = await this.profileService.calculateStreakCounts(githubUsername);
+            const streak = this.profileService.calculateStreakCounts(profile.last28daysContributionCounts);
             const response: ProfileGetResponse = {
                 name: profile.name,
                 githubUsername: profile.githubUsername,
