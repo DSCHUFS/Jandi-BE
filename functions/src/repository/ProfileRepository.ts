@@ -23,7 +23,7 @@ export class ProfileRepository extends FirestoreRepository {
                 name: data.name,
                 githubUsername: data.githubUsername,
                 websiteUrl: data.websiteUrl,
-                totalContributions: data.totalContributions,
+                totalContributions: data.totalContributions ?? 0,
                 last28daysContributionCounts: data.last28daysContributionCounts.length == 28 ?
                     data.last28daysContributionCounts : new Array(28).fill(0),
                 latestPushedAt: data.latestPushedAt ? data.latestPushedAt.toDate() : data.latestPushedAt,
