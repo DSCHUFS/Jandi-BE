@@ -1,4 +1,4 @@
-import {Body, Controller, Get, HttpError, Param, Post} from "routing-controllers";
+import {Body, Controller, Get, HttpError, Param, Post, QueryParam} from "routing-controllers";
 import {Service} from "typedi";
 import {prepareResponse} from "../../lib/ApiResponse";
 import {ProfileCreateRequest} from "./request/ProfileCreateRequest";
@@ -14,14 +14,14 @@ export class ProfileController {
     }
 
     @Get("/")
-    async getAll() {
+    async getAll(@QueryParam("sortBy") sortBy: string) {
         const profiles: ProfileGetResponse[] = (await this.profileService.readAllProfiles()).map((profile: Profile) => {
             const streak = this.profileService.calculateStreakCounts(profile.last28daysContributionCounts);
             return {
                 name: profile.name,
                 githubUsername: profile.githubUsername,
                 websiteUrl: profile.websiteUrl,
-                totalCommitCounts: profile.totalCommitCounts,
+                totalContributions: profile.totalContributions,
                 last28daysContributionCounts: profile.last28daysContributionCounts,
                 latestPushedAt: profile.latestPushedAt,
                 createdAt: profile.createdAt,
@@ -29,8 +29,23 @@ export class ProfileController {
                 streakCounts: streak,
             };
         });
+
+        profiles.sort((a, b) => {
+            switch (sortBy) {
+            case "latestPushedAt":
+                return new Date(b.latestPushedAt).getTime() - new Date(a.latestPushedAt).getTime();
+            case "streakCounts":
+                return b.streakCounts - a.streakCounts;
+            case "totalContributions":
+                return b.totalContributions - a.totalContributions;
+            default:
+                return 0;
+            }
+        });
+
         return prepareResponse(profiles, "");
     }
+
 
     @Get("/:githubUsername")
     async getOne(@Param("githubUsername") githubUsername: string) {
@@ -42,7 +57,7 @@ export class ProfileController {
                 name: profile.name,
                 githubUsername: profile.githubUsername,
                 websiteUrl: profile.websiteUrl,
-                totalCommitCounts: profile.totalCommitCounts,
+                totalContributions: profile.totalContributions,
                 last28daysContributionCounts: profile.last28daysContributionCounts,
                 latestPushedAt: profile.latestPushedAt,
                 createdAt: profile.createdAt,
@@ -68,7 +83,7 @@ export class ProfileController {
             githubUsername: profileCreateRequest.githubUsername,
             name: profileCreateRequest.name,
             websiteUrl: profileCreateRequest.websiteUrl,
-            totalCommitCounts: 0,
+            totalContributions: 0,
             last28daysContributionCounts: [],
             latestPushedAt: "",
             createdAt: new Date(),

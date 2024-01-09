@@ -26,5 +26,19 @@
       "enabled": true
     },
     "singleProjectMode": true
+  },
+  "hosting": {
+    "site": "api-jandi",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "function": "api"
+      }
+    ]
   }
 }
