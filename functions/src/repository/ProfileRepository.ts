@@ -65,7 +65,7 @@ export class ProfileRepository extends FirestoreRepository {
 
     async updateTotalContributions(githubUsername: string, totalContributions: number) {
         await this.db.collection("profiles").doc(githubUsername).update({
-            totalCommitCounts: totalContributions,
+            totalContributions: totalContributions,
         });
     }
 
