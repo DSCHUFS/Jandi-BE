@@ -32,18 +32,19 @@ export class ProfileService {
     }
 
     calculateStreakCounts(last28daysContributionCounts: number[]): number {
-        let currentStreak = 0;
-        let maxStreak = 0;
+        let streak = 0;
 
         for (let index = last28daysContributionCounts.length - 1; index >= 0; index--) {
+            if (last28daysContributionCounts[index] === -1) {
+                continue; // -1을 만나면 건너뛰기
+            }
             if (last28daysContributionCounts[index] > 0) {
-                currentStreak++;
-                maxStreak = Math.max(maxStreak, currentStreak);
+                streak++;
             } else {
-                currentStreak = 0; // Streak가 끊기면 현재 streak를 0으로 리셋
+                break; // 0을 만나면 종료
             }
         }
 
-        return maxStreak;
+        return streak;
     }
 }
