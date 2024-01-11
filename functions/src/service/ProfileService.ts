@@ -37,19 +37,12 @@ export class ProfileService {
     calculateStreakCounts(last28daysContributionCounts: number[]): number {
         const globalDate = new GlobalDate();
 
-        const startDate: Date = globalDate.startDate;
+        const startDate: Date = globalDate.trackingBeginDate;
         const currentDate: Date = new Date();
 
         const diffTime = Math.abs(currentDate.getTime() - startDate.getTime());
         // 현재 인덱스 : diffDays - 1
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        // const test =[
-        //     0, 0, 0, 0, 2, 1, 5, 1,
-        //     4, 5, 3, 0, 0, 0, 1, 1,
-        //     1, 1, 0, 0, 0, 0, 0, 0,
-        //     0, 0, 0, 0
-        // ];
 
         let count = 0;
         for (let index = diffDays - 1; index > 0; index--) {

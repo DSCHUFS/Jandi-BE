@@ -3,18 +3,21 @@ import {GithubService} from "./GithubService";
 import {Service} from "typedi";
 import {PushEventService} from "./PushEventService";
 import {CrawlingStatusService} from "./CrawlingStatusService";
+import { ContributionService } from "./ContributionService";
 
 @Service()
 export class ScheduledSynchronizeService {
     constructor(private profileService: ProfileService,
                 private pushEventService: PushEventService,
                 private githubService: GithubService,
-                private crawlingStatusService: CrawlingStatusService) {
+                private crawlingStatusService: CrawlingStatusService,
+                private contributionService: ContributionService) {
     }
 
     async synchronize() {
         await this.synchronizePushEvents();
         await this.crawlingStatusService.updateCrawlingStatus();
+        await this.contributionService.syncronizeGithubUserContributions();
     }
 
     private async synchronizePushEvents() {
