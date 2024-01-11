@@ -12,7 +12,6 @@ export class ContributionService {
         const profiles = await this.profileService.readAllProfiles();
         const date = new GlobalDate();
 
-        const totalContributesDate = date.eventStartDate;
         const startDate = date.trackingBeginDate;
         const lastDate = new Date(startDate);
         lastDate.setDate(startDate.getDate() + 27);
@@ -27,7 +26,7 @@ export class ContributionService {
 
             const response = await this.githubService.getGithubUserContributions(
                 githubUsername,
-                totalContributesDate,
+                date.eventStartDate,
                 lastDate
             );
 
