@@ -15,9 +15,12 @@ export class ScheduledSynchronizeService {
     }
 
     async synchronize() {
-        await this.synchronizePushEvents();
+        await Promise.all([
+            this.synchronizePushEvents(),
+            this.contributionService.synchronizeGithubUserContributions()
+        ]);
+
         await this.crawlingStatusService.updateCrawlingStatus();
-        await this.contributionService.synchronizeGithubUserContributions();
     }
 
     private async synchronizePushEvents() {
