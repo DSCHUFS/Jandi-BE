@@ -1,7 +1,7 @@
 import {Service} from "typedi";
-import {GithubService} from "./GithubService";
-import {ProfileService} from "./ProfileService";
-import {GlobalDate} from "../global/globalDate";
+import {GithubService} from "../GithubService";
+import {ProfileService} from "../ProfileService";
+import {GlobalDate} from "../../global/globalDate";
 
 @Service()
 export class ContributionService {
