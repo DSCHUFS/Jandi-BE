@@ -1,9 +1,6 @@
 import {Service} from "typedi";
 import {ProfileRepository} from "../repository/ProfileRepository";
 import {Profile} from "../model/Profile";
-import {GlobalDate} from "../global/globalDate";
-
-// import {ProfileResponse} from "../controller/profile/response";
 
 @Service()
 export class ProfileService {
@@ -35,23 +32,18 @@ export class ProfileService {
     }
 
     calculateStreakCounts(last28daysContributionCounts: number[]): number {
-        const globalDate = new GlobalDate();
+        let currentStreak = 0;
+        let maxStreak = 0;
 
-        const startDate: Date = globalDate.trackingBeginDate;
-        const currentDate: Date = new Date();
-
-        const diffTime = Math.abs(currentDate.getTime() - startDate.getTime());
-        // 현재 인덱스 : diffDays - 1
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        let count = 0;
-        for (let index = diffDays - 1; index > 0; index--) {
+        for (let index = last28daysContributionCounts.length - 1; index >= 0; index--) {
             if (last28daysContributionCounts[index] > 0) {
-                count++;
+                currentStreak++;
+                maxStreak = Math.max(maxStreak, currentStreak);
             } else {
-                break;
+                currentStreak = 0; // Streak가 끊기면 현재 streak를 0으로 리셋
             }
         }
-        return count;
+
+        return maxStreak;
     }
 }
