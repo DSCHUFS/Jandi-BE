@@ -1,13 +1,14 @@
-import { Service } from "typedi";
-import { GithubService } from "./GithubService";
-import { ProfileService } from "./ProfileService";
-import { GlobalDate } from "../global/globalDate";
+import {Service} from "typedi";
+import {GithubService} from "./GithubService";
+import {ProfileService} from "./ProfileService";
+import {GlobalDate} from "../global/globalDate";
 
 @Service()
 export class ContributionService {
-    constructor(private githubService: GithubService, private profileService: ProfileService){}
+    constructor(private githubService: GithubService, private profileService: ProfileService) {
+    }
 
-    async syncronizeGithubUserContributions() {
+    async synchronizeGithubUserContributions() {
         const profiles = await this.profileService.readAllProfiles();
         const date = new GlobalDate();
 
@@ -19,8 +20,8 @@ export class ContributionService {
         const d = new Date();
         const utc = d.getTime() + (d.getTimezoneOffset() * 60 * 1000);
         const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
-        const currentDate = new Date(utc+KR_TIME_DIFF);
-        
+        const currentDate = new Date(utc + KR_TIME_DIFF);
+
         await Promise.all(profiles.map(async (profile) => {
             const githubUsername = profile.githubUsername;
 
@@ -45,7 +46,8 @@ export class ContributionService {
                 }
             );
 
-            const totalContributions: number = response.data.user.contributionsCollection.contributionCalendar.totalContributions;
+            const totalContributions: number = response.data.user.contributionsCollection
+                .contributionCalendar.totalContributions;
 
             await this.profileService.updateContributeCounts(githubUsername, resultArray);
             await this.profileService.updateTotalContributions(githubUsername, totalContributions);
