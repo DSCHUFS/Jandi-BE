@@ -1,7 +1,6 @@
-import {Body, Controller, Get, HttpError, Param, Post, QueryParam} from "routing-controllers";
+import {Controller, Get, HttpError, Param, QueryParam} from "routing-controllers";
 import {Service} from "typedi";
 import {prepareResponse} from "../../lib/ApiResponse";
-import {ProfileCreateRequest} from "./request/ProfileCreateRequest";
 import {ProfileService} from "../../service/ProfileService";
 import {PushEventService} from "../../service/PushEventService";
 import {ProfileGetResponse} from "./request/ProfileGetResponse";
@@ -76,6 +75,7 @@ export class ProfileController {
         return prepareResponse(pushEvents, "");
     }
 
+    /*
     // TODO : Disable this API in production
     @Post("/")
     async postOne(@Body({required: true}) profileCreateRequest: ProfileCreateRequest) {
@@ -96,5 +96,5 @@ export class ProfileController {
         } else {
             throw new HttpError(500, "Profile create failed");
         }
-    }
+    }*/
 }

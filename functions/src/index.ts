@@ -17,7 +17,6 @@ import {scheduledFunction} from "./scheduledTasks";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 
 import {setGlobalOptions} from "firebase-functions/v2";
-import {GithubController} from "./controller/github/GithubController";
 import {defineSecret} from "firebase-functions/params";
 
 const githubAccessToken = defineSecret("GITHUB_TOKEN");
@@ -48,7 +47,7 @@ const app = createExpressServer({
     },
     defaultErrorHandler: false,
     middlewares: [HttpErrorHandler],
-    controllers: [ProfileController, GithubController],
+    controllers: [ProfileController],
 });
 
 exports.api = onRequest({secrets: [githubAccessToken]}, app);
