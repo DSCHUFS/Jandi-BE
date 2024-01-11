@@ -16,7 +16,10 @@ export class ContributionService {
         const lastDate = new Date(startDate);
         lastDate.setDate(startDate.getDate() + 27);
 
-        const currentDate = new Date();
+        const d = new Date();
+        const utc = d.getTime() + (d.getTimezoneOffset() * 60 * 1000);
+        const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+        const currentDate = new Date(utc+KR_TIME_DIFF);
         
         await Promise.all(profiles.map(async (profile) => {
             const githubUsername = profile.githubUsername;

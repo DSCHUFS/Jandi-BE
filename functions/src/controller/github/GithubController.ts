@@ -30,7 +30,10 @@ export class GithubController {
         const lastDate = new Date(startDate);
         lastDate.setDate(startDate.getDate() + 27);
 
-        const currentDate = new Date();
+        const d = new Date();
+        const utc = d.getTime() + (d.getTimezoneOffset() * 60 * 1000);
+        const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+        const currentDate = new Date(utc+KR_TIME_DIFF);
 
         const response = await this.githubService.getGithubUserContributions(
             githubUsername,
@@ -38,6 +41,7 @@ export class GithubController {
             lastDate
         );
 
+        console.log(date.eventStartDate, date.trackingBeginDate);
         console.log(startDate, lastDate);
         console.log(currentDate);
 
