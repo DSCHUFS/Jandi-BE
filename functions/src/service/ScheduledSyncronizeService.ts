@@ -3,7 +3,7 @@ import {GithubService} from "./GithubService";
 import {Service} from "typedi";
 import {PushEventService} from "./PushEventService";
 import {CrawlingStatusService} from "./CrawlingStatusService";
-import { ContributionService } from "./ContributionService";
+import {ContributionService} from "./ContributionService";
 
 @Service()
 export class ScheduledSynchronizeService {

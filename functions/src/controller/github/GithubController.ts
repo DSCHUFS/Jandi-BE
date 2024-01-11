@@ -2,7 +2,7 @@ import {Controller, Get, Param} from "routing-controllers";
 import {Service} from "typedi";
 import {GithubService} from "../../service/GithubService";
 import {ProfileService} from "../../service/ProfileService";
-import { GlobalDate } from "../../global/globalDate";
+import {GlobalDate} from "../../global/globalDate";
 
 @Controller("/github")
 @Service()
@@ -33,7 +33,7 @@ export class GithubController {
         const d = new Date();
         const utc = d.getTime() + (d.getTimezoneOffset() * 60 * 1000);
         const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
-        const currentDate = new Date(utc+KR_TIME_DIFF);
+        const currentDate = new Date(utc + KR_TIME_DIFF);
 
         const response = await this.githubService.getGithubUserContributions(
             githubUsername,
