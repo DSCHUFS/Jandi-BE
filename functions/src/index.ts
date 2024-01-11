@@ -55,6 +55,6 @@ exports.api = onRequest({secrets: [githubAccessToken]}, app);
 
 exports.scheduledFunctionCrontab = onSchedule({
     secrets: [githubAccessToken],
-    schedule: "every 1 minutes",
+    schedule: "every 5 minutes",
     timeZone: "Asia/Seoul",
 }, scheduledFunction);
