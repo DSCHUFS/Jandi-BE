@@ -13,7 +13,7 @@ export class ProfileController {
     }
 
     @Get("/")
-    async getAll(@QueryParam("sortBy") sortBy: string) {
+    async getAll(@QueryParam("sort") sortBy: string) {
         const profiles: ProfileGetResponse[] = (await this.profileService.readAllProfiles()).map((profile: Profile) => {
             const streak = this.profileService.calculateStreakCounts(profile.last28daysContributionCounts);
             return {
