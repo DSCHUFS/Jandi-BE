@@ -1,11 +1,10 @@
-import {Body, Controller, Get, HttpError, Param, Post, QueryParam} from "routing-controllers";
+import {Controller, Get, HttpError, Param, QueryParam} from "routing-controllers";
 import {Service} from "typedi";
 import {prepareResponse} from "../../lib/ApiResponse";
 import {ProfileService} from "../../service/ProfileService";
 import {PushEventService} from "../../service/PushEventService";
 import {ProfileGetResponse} from "./request/ProfileGetResponse";
 import {Profile} from "../../model/Profile";
-import {ProfileCreateRequest} from "./request/ProfileCreateRequest";
 
 @Controller("/profiles")
 @Service()
@@ -34,12 +33,20 @@ export class ProfileController {
         profiles.sort((a, b) => {
             switch (sortBy) {
             case "latestPushedAt":
+                if (!a.latestPushedAt) return 1;
+                if (!b.latestPushedAt) return -1;
                 return new Date(b.latestPushedAt).getTime() - new Date(a.latestPushedAt).getTime();
             case "streakCounts":
+                if (a.streakCounts === undefined) return 1;
+                if (b.streakCounts === undefined) return -1;
                 return b.streakCounts - a.streakCounts;
             case "totalContributions":
+                if (a.totalContributions === undefined) return 1;
+                if (b.totalContributions === undefined) return -1;
                 return b.totalContributions - a.totalContributions;
             case "activeDayCount":
+                if (a.activeDayCount === undefined) return 1;
+                if (b.activeDayCount === undefined) return -1;
                 return b.activeDayCount - a.activeDayCount;
             default:
                 return 0;
@@ -81,24 +88,24 @@ export class ProfileController {
     }
 
     // TODO : Disable this API in production
-    @Post("/")
-    async postOne(@Body({required: true}) profileCreateRequest: ProfileCreateRequest) {
-        await this.profileService.createProfile({
-            githubUsername: profileCreateRequest.githubUsername,
-            name: profileCreateRequest.name,
-            websiteUrl: profileCreateRequest.websiteUrl,
-            totalContributions: 0,
-            last28daysContributionCounts: [],
-            latestPushedAt: "",
-            createdAt: new Date(),
-            modifiedAt: new Date(),
-        });
-
-        const profile = await this.profileService.readProfile(profileCreateRequest.githubUsername);
-        if (profile) {
-            return prepareResponse(profile, "");
-        } else {
-            throw new HttpError(500, "Profile create failed");
-        }
-    }
+    // @Post("/")
+    // async postOne(@Body({required: true}) profileCreateRequest: ProfileCreateRequest) {
+    //     await this.profileService.createProfile({
+    //         githubUsername: profileCreateRequest.githubUsername,
+    //         name: profileCreateRequest.name,
+    //         websiteUrl: profileCreateRequest.websiteUrl,
+    //         totalContributions: 0,
+    //         last28daysContributionCounts: [],
+    //         latestPushedAt: "",
+    //         createdAt: new Date(),
+    //         modifiedAt: new Date(),
+    //     });
+    //
+    //     const profile = await this.profileService.readProfile(profileCreateRequest.githubUsername);
+    //     if (profile) {
+    //         return prepareResponse(profile, "");
+    //     } else {
+    //         throw new HttpError(500, "Profile create failed");
+    //     }
+    // }
 }
