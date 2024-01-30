@@ -9,17 +9,21 @@ export class ContributionService {
     }
 
     async synchronizeGithubUserContributions() {
+        const KR_HOURS = 9;
+        const KR_TIME_DIFF = KR_HOURS * 60 * 60 * 1000;
+
         const profiles = await this.profileService.readAllProfiles();
         const date = new GlobalDate();
 
-        const startDate = date.trackingBeginDate;
-        const lastDate = new Date(startDate);
-        lastDate.setDate(startDate.getDate() + 27);
+        const startDateInKST = date.trackingBeginDate;
+        startDateInKST.setHours(KR_HOURS, 0, 0, 0);
+
+        const lastDateInKST = new Date(startDateInKST);
+        lastDateInKST.setDate(startDateInKST.getDate() + 27);
 
         const d = new Date();
         const utc = d.getTime() + (d.getTimezoneOffset() * 60 * 1000);
-        const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
-        const currentDate = new Date(utc + KR_TIME_DIFF);
+        const currentDateInKST = new Date(utc + KR_TIME_DIFF);
 
         await Promise.all(profiles.map(async (profile) => {
             const githubUsername = profile.githubUsername;
@@ -27,7 +31,7 @@ export class ContributionService {
             const response = await this.githubService.getGithubUserContributions(
                 githubUsername,
                 date.eventStartDate,
-                lastDate
+                lastDateInKST
             );
 
             const resultArray: number[] = [];
@@ -36,9 +40,11 @@ export class ContributionService {
                 (week: any) => {
                     week.contributionDays.forEach((day: any) => {
                         // 각 날짜에 대한 contributionCount와 date를 객체로 만들어 배열에 추가
-                        if (new Date(day.date) >= startDate) {
+                        const contributionDateInKST = new Date(day.date);
+                        contributionDateInKST.setHours(KR_HOURS, 0, 0, 0);
+                        if (contributionDateInKST >= startDateInKST) {
                             resultArray.push(
-                                (new Date(day.date) <= currentDate) ? day.contributionCount : -1
+                                (contributionDateInKST <= currentDateInKST) ? day.contributionCount : -1
                             );
                         }
                     });

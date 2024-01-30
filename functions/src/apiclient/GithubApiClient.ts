@@ -10,7 +10,10 @@ export class GithubApiClient {
     constructor() {
         this.client = axios.create({
             baseURL: "https://api.github.com/",
-            headers: {"Authorization": `Bearer ${githubAccessToken.value()}`},
+            headers: {
+                "Authorization": `Bearer ${githubAccessToken.value()}`,
+                "TimeZone": "Asia/Seoul",
+            },
         });
     }
 

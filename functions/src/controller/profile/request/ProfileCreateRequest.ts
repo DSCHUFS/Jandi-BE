@@ -5,6 +5,5 @@ export class ProfileCreateRequest {
     public name = "";
     @IsNotEmpty()
     public githubUsername = "";
-    @IsNotEmpty()
     public websiteUrl = "";
 }

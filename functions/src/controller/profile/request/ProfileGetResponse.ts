@@ -7,5 +7,6 @@ export interface ProfileGetResponse {
     latestPushedAt: string,
     createdAt: Date,
     modifiedAt: Date,
-    streakCounts: number
+    streakCounts: number,
+    activeDayCount : number,
 }

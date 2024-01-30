@@ -1,10 +1,11 @@
-import {Controller, Get, HttpError, Param, QueryParam} from "routing-controllers";
+import {Body, Controller, Get, HttpError, Param, Post, QueryParam} from "routing-controllers";
 import {Service} from "typedi";
 import {prepareResponse} from "../../lib/ApiResponse";
 import {ProfileService} from "../../service/ProfileService";
 import {PushEventService} from "../../service/PushEventService";
 import {ProfileGetResponse} from "./request/ProfileGetResponse";
 import {Profile} from "../../model/Profile";
+import {ProfileCreateRequest} from "./request/ProfileCreateRequest";
 
 @Controller("/profiles")
 @Service()
@@ -26,6 +27,7 @@ export class ProfileController {
                 createdAt: profile.createdAt,
                 modifiedAt: profile.modifiedAt,
                 streakCounts: streak,
+                activeDayCount: profile.last28daysContributionCounts.filter((count) => count > 0).length,
             };
         });
 
@@ -37,6 +39,8 @@ export class ProfileController {
                 return b.streakCounts - a.streakCounts;
             case "totalContributions":
                 return b.totalContributions - a.totalContributions;
+            case "activeDayCount":
+                return b.activeDayCount - a.activeDayCount;
             default:
                 return 0;
             }
@@ -62,6 +66,7 @@ export class ProfileController {
                 createdAt: profile.createdAt,
                 modifiedAt: profile.modifiedAt,
                 streakCounts: streak,
+                activeDayCount: profile.last28daysContributionCounts.filter((count) => count > 0).length,
             };
             return prepareResponse(response, "");
         } else {
@@ -75,7 +80,6 @@ export class ProfileController {
         return prepareResponse(pushEvents, "");
     }
 
-    /*
     // TODO : Disable this API in production
     @Post("/")
     async postOne(@Body({required: true}) profileCreateRequest: ProfileCreateRequest) {
@@ -96,5 +100,5 @@ export class ProfileController {
         } else {
             throw new HttpError(500, "Profile create failed");
         }
-    }*/
+    }
 }
