@@ -1,7 +1,7 @@
 import {Service} from "typedi";
 import {GithubService} from "../GithubService";
 import {ProfileService} from "../ProfileService";
-import {GlobalDate} from "../../global/globalDate";
+import {addDays, getCurrentKSTDate, GlobalDate, toKSTDate} from "../../global/globalDate";
 
 @Service()
 export class ContributionService {
@@ -9,47 +9,43 @@ export class ContributionService {
     }
 
     async synchronizeGithubUserContributions() {
-        const KR_HOURS = 9;
-        const KR_TIME_DIFF = KR_HOURS * 60 * 60 * 1000;
-
         const profiles = await this.profileService.readAllProfiles();
         const date = new GlobalDate();
-
-        const startDateInKST = date.trackingBeginDate;
-        startDateInKST.setHours(KR_HOURS, 0, 0, 0);
-
-        const lastDateInKST = new Date(startDateInKST);
-        lastDateInKST.setDate(startDateInKST.getDate() + 27);
-
-        const d = new Date();
-        const utc = d.getTime() + (d.getTimezoneOffset() * 60 * 1000);
-        const currentDateInKST = new Date(utc + KR_TIME_DIFF);
 
         await Promise.all(profiles.map(async (profile) => {
             const githubUsername = profile.githubUsername;
 
             const response = await this.githubService.getGithubUserContributions(
                 githubUsername,
-                date.eventStartDate,
-                lastDateInKST
+                toKSTDate(date.DATE_EVENT_START),
+                addDays(toKSTDate(date.DATE_EVENT_START), 27)
             );
 
             const resultArray: number[] = [];
 
-            response.data.user.contributionsCollection.contributionCalendar.weeks.forEach(
-                (week: any) => {
-                    week.contributionDays.forEach((day: any) => {
-                        // 각 날짜에 대한 contributionCount와 date를 객체로 만들어 배열에 추가
-                        const contributionDateInKST = new Date(day.date);
-                        contributionDateInKST.setHours(KR_HOURS, 0, 0, 0);
-                        if (contributionDateInKST >= startDateInKST) {
-                            resultArray.push(
-                                (contributionDateInKST <= currentDateInKST) ? day.contributionCount : -1
-                            );
-                        }
-                    });
-                }
-            );
+            const nowInKST: Date = getCurrentKSTDate();
+
+            response.data.user.contributionsCollection.contributionCalendar.weeks.forEach((week: any) => {
+                week.contributionDays.forEach((day: any) => {
+                    // day.date는 "YYYY-MM-DD" 형태의 문자열
+                    const [contributionYear, contributionMonth, contributionDay] = day.date.split("-").map(Number);
+                    const [startYear, startMonth, startDay] = date.DATE_EVENT_START.split("-").map(Number);
+
+                    const currentYear = nowInKST.getFullYear();
+                    const currentMonth = nowInKST.getMonth() + 1;
+                    const currentDay = nowInKST.getDate();
+
+                    const contributionDateNum = contributionYear * 10000 + contributionMonth * 100 + contributionDay;
+                    const startDateNum = startYear * 10000 + startMonth * 100 + startDay;
+                    const currentDateNum = currentYear * 10000 + currentMonth * 100 + currentDay;
+
+                    if (contributionDateNum >= startDateNum) {
+                        resultArray.push(
+                            (contributionDateNum <= currentDateNum) ? day.contributionCount : -1
+                        );
+                    }
+                });
+            });
 
             const totalContributions: number = response.data.user.contributionsCollection
                 .contributionCalendar.totalContributions;
